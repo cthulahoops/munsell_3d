@@ -17,7 +17,7 @@ function main () {
   for (let i = 0; i < segments; i++) {
     const angle = i * 2 * Math.PI / segments
     for (let value = 1; value <= 9; value++) {
-      for (let chroma = 2; chroma <= 20; chroma += 2) {
+      for (let chroma = 2; chroma <= 18; chroma += 2) {
         const [r, g, b] = munsell.mhvcToRgb(100 * i / segments, value, chroma)
         if (r > 1 || g > 1 || b > 1 || r < 0 || g < 0 || b < 0) {
           continue
@@ -26,7 +26,7 @@ function main () {
         const material = new THREE.MeshBasicMaterial({ color })
 
         const cube = new THREE.Mesh(geometry, material)
-        cube.position.x = 2 * chroma * Math.sin(angle)
+        cube.position.x = chroma * Math.sin(angle)
         cube.position.y = 2 * value
         cube.position.z = chroma * Math.cos(angle)
 
