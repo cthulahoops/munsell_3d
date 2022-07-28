@@ -1,3 +1,5 @@
+import * as THREE from 'three'
+
 // Taken from: https://stackoverflow.com/questions/2353211/hsl-to-rgb-color-conversion#9493060
 function hslColor (h, s, l) {
   let r, g, b
@@ -58,7 +60,7 @@ function main () {
   scene.add(cylinder)
 
   camera.position.z = 30
-  camera.position.y = 30
+  camera.position.y = 25
   camera.rotation.x = -0.5
 
   function animate () {
