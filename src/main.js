@@ -16,7 +16,7 @@ function main () {
   const segments = 20
   for (let i = 0; i < segments; i++) {
     const angle = i * 2 * Math.PI / segments
-    for (let value = 2; value <= 30; value++) {
+    for (let value = 1; value <= 9; value++) {
       for (let chroma = 2; chroma <= 20; chroma += 2) {
         const [r, g, b] = munsell.mhvcToRgb(100 * i / segments, value, chroma)
         if (r > 1 || g > 1 || b > 1 || r < 0 || g < 0 || b < 0) {
