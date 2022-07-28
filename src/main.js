@@ -1,12 +1,6 @@
 import * as THREE from 'three'
 import * as munsell from 'munsell'
 
-function hslColor (h, s, l) {
-  let r, g, b
-  [r, g, b] = munsell.mhvcToRgb(h, s, l)
-  return new THREE.Color(r, g, b)
-}
-
 function main () {
   const scene = new THREE.Scene()
   const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000)
@@ -19,18 +13,22 @@ function main () {
   const cylinder = new THREE.Group()
 
   const geometry = new THREE.BoxGeometry(1, 1, 1)
-  const segments = 10
+  const segments = 20
   for (let i = 0; i < segments; i++) {
     const angle = i * 2 * Math.PI / segments
-    for (let d = 0; d <= 8; d++) {
-      for (let v = 0; v <= 10; v++) {
-        const color = hslColor(100 * i / segments, v, d)
+    for (let value = 2; value <= 30; value++) {
+      for (let chroma = 2; chroma <= 20; chroma += 2) {
+        const [r, g, b] = munsell.mhvcToRgb(100 * i / segments, value, chroma)
+        if (r > 1 || g > 1 || b > 1 || r < 0 || g < 0 || b < 0) {
+          continue
+        }
+        const color = new THREE.Color(r, g, b)
         const material = new THREE.MeshBasicMaterial({ color })
 
         const cube = new THREE.Mesh(geometry, material)
-        cube.position.x = 2 * d * Math.sin(angle)
-        cube.position.y = 2 * v
-        cube.position.z = 2 * d * Math.cos(angle)
+        cube.position.x = 2 * chroma * Math.sin(angle)
+        cube.position.y = 2 * value
+        cube.position.z = chroma * Math.cos(angle)
 
         cube.rotation.y = angle
         cylinder.add(cube)
@@ -45,7 +43,7 @@ function main () {
   camera.rotation.x = -0.5
 
   function animate () {
-    cylinder.rotation.y += 0.001
+    cylinder.rotation.y += 0.003
     requestAnimationFrame(animate)
     renderer.render(scene, camera)
   }
