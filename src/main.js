@@ -12,12 +12,16 @@ window.munsell = munsell
 
 function renderPalette (palette) {
   const scene = new THREE.Scene()
-  const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000)
+  const container = document.getElementById('output_3d')
+
+  const width = 0.9 * container.clientWidth;
+  const height = width;
+
+  const camera = new THREE.PerspectiveCamera(75, height / width, 0.1, 1000)
 
   const renderer = new THREE.WebGLRenderer()
-  renderer.setSize(window.innerWidth / 2, window.innerHeight / 2)
+  renderer.setSize(width, height)
   renderer.setClearColor(0x777777)
-  const container = document.getElementById('3d_output')
   container.appendChild(renderer.domElement)
 
   const cylinder = new THREE.Group()

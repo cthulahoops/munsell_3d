@@ -3,14 +3,18 @@
     <head>
         <meta charset="utf-8">
         <title>Colour Cylinder</title>
-        <style>
-            body { margin: 0; }
-        </style>
+        <link rel="stylesheet" href="../css/style.css">
         <script src="./main.js" type=module></script>
     </head>
     <body>
-        <input type="file" id=select_file>
-        <canvas id="image_input" style="float: left"></canvas>
-        <div id="3d_output" style="float: left"></div>
+        <div class="grid_container">
+            <div class=input>
+                <div>
+                    <input type="file" id=select_file>
+                </div>
+                <canvas id="image_input"></canvas>
+            </div>
+            <div class="output" id="output_3d"></div>
+        </div>
     </body>
 </html>
