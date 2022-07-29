@@ -6,9 +6,9 @@ window.munsell = munsell
 
 /* global Image */
 
-function main () {
-  displayImage()
-}
+// function main () {
+// displayImage()
+// }
 
 function renderPalette (palette) {
   const scene = new THREE.Scene()
@@ -58,11 +58,16 @@ function renderPalette (palette) {
   animate()
 }
 
-function displayImage () {
+function displayImage (imageFile) {
   const canvas = document.getElementById('image_input')
   const context = canvas.getContext('2d')
   const img = new Image()
-  img.src = './poppy.jpg'
+  img.file = imageFile
+
+  const reader = new FileReader()
+  reader.onload = (function (aImg) { return function (e) { aImg.src = e.target.result } })(img)
+  reader.readAsDataURL(imageFile)
+
   img.onload = () => {
     console.log('Image loaded.')
     canvas.height = img.height
@@ -82,7 +87,7 @@ function displayImage () {
       colors.set(mhvc, (colors.get(mhvc) || 0) + 1)
     }
     for (const [key, value] of colors.entries()) {
-      if (value < 10) {
+      if (value < 5) {
         colors.delete(key)
       }
     }
@@ -94,4 +99,11 @@ function displayImage () {
 function roundTo (value, step) {
   return step * Math.round(value / step)
 }
-main()
+
+const fileInput = document.getElementById('select_file')
+
+fileInput.onchange = () => {
+  const selectedFile = fileInput.files[0]
+  console.log(selectedFile)
+  displayImage(selectedFile)
+}
