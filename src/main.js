@@ -1,6 +1,9 @@
 import * as THREE from 'three'
 import * as munsell from 'munsell'
 
+// Helpful for debugging, remove later. (There must be a better way!)
+window.munsell = munsell
+
 /* global Image */
 
 function main () {
@@ -23,8 +26,8 @@ function renderPalette (palette) {
   // const segments = 40
 
   for (const mcolor of palette.keys()) {
-    const [hue, value, chroma] = munsell.munsellToMhvc(mcolor)
-    const [r, g, b] = munsell.munsellToRgb(mcolor)
+    const [hue, value, chroma] = JSON.parse(mcolor)
+    const [r, g, b] = munsell.mhvcToRgb(hue, value, chroma)
     // if (r > 1 || g > 1 || b > 1 || r < 0 || g < 0 || b < 0) {
     //   continue
     // }
@@ -34,7 +37,7 @@ function renderPalette (palette) {
 
     const cube = new THREE.Mesh(geometry, material)
     cube.position.x = chroma * Math.sin(angle)
-    cube.position.y = 2 * value
+    cube.position.y = value
     cube.position.z = chroma * Math.cos(angle)
 
     cube.rotation.y = angle
@@ -73,8 +76,9 @@ function displayImage () {
       const g = pixelData.data[offset + 1]
       const b = pixelData.data[offset + 2]
       let mhvc = munsell.rgb255ToMhvc(r, g, b)
-      const [m, v, c] = [Math.round(mhvc[0]), Math.round(mhvc[1]), Math.round(mhvc[2])]
-      mhvc = munsell.mhvcToMunsell(m, v, c)
+      const [m, v, c] = [roundTo(mhvc[0], 2.5), roundTo(mhvc[1], 2.0), roundTo(mhvc[2], 2.0)]
+      // TODO Would like to use Munsell string here instead of JSON, but the library does wrong rounding and mangles 2.5.
+      mhvc = JSON.stringify([m, v, c])
       colors.set(mhvc, (colors.get(mhvc) || 0) + 1)
     }
     for (const [key, value] of colors.entries()) {
@@ -85,5 +89,9 @@ function displayImage () {
     console.log('Colours filtered!', colors)
     renderPalette(colors)
   }
+}
+
+function roundTo (value, step) {
+  return step * Math.round(value / step)
 }
 main()
