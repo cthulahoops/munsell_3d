@@ -3,7 +3,23 @@ import * as munsell from 'munsell'
 
 /* global Image, FileReader */
 
-function renderPalette (palette) {
+function main () {
+  const fileInput = document.getElementById('select_file')
+
+  const scene = initScene()
+
+  fileInput.onchange = () => {
+    const selectedFile = fileInput.files[0]
+    console.log(selectedFile)
+    displayImage(selectedFile, (palette) => {
+      scene.clear()
+      const cylinder = paletteCylinder(palette)
+      scene.add(cylinder)
+    })
+  }
+}
+
+function initScene () {
   const scene = new THREE.Scene()
   const container = document.getElementById('output_3d')
 
@@ -16,9 +32,6 @@ function renderPalette (palette) {
   renderer.setSize(width, height)
   renderer.setClearColor(0x777777)
   container.appendChild(renderer.domElement)
-
-  const cylinder = paletteCylinder(palette)
-  scene.add(cylinder)
 
   const viewAngle = Math.PI / 4
   const cameraDistance = 30
@@ -33,10 +46,10 @@ function renderPalette (palette) {
       const positionX = event.clientX / width
       const positionY = event.clientY / width
       if (lastPositionX) {
-        cylinder.rotation.y += 2.0 * (positionX - lastPositionX)
+        scene.rotation.y += 2.0 * (positionX - lastPositionX)
       }
       if (lastPositionY) {
-        cylinder.rotation.x += 2.0 * (positionY - lastPositionY)
+        scene.rotation.x += 2.0 * (positionY - lastPositionY)
       }
       lastPositionX = positionX
       lastPositionY = positionY
@@ -51,6 +64,8 @@ function renderPalette (palette) {
     renderer.render(scene, camera)
   }
   animate()
+
+  return scene
 }
 
 function paletteCylinder (palette) {
@@ -77,7 +92,7 @@ function paletteCylinder (palette) {
   return cylinder
 }
 
-function displayImage (imageFile) {
+function displayImage (imageFile, renderPalette) {
   const canvas = document.getElementById('image_input')
   const context = canvas.getContext('2d')
   const img = new Image()
@@ -119,10 +134,4 @@ function roundTo (value, step) {
   return step * Math.round(value / step)
 }
 
-const fileInput = document.getElementById('select_file')
-
-fileInput.onchange = () => {
-  const selectedFile = fileInput.files[0]
-  console.log(selectedFile)
-  displayImage(selectedFile)
-}
+main()
