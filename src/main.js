@@ -50,12 +50,33 @@ function renderPalette (palette) {
 
   scene.add(cylinder)
 
-  camera.position.z = 20
-  camera.position.y = 12
-  camera.rotation.x = 0
+  let viewAngle = Math.PI / 4
+  let cameraDistance = 30
+  camera.position.z = cameraDistance * Math.cos(viewAngle)
+  camera.position.y = 5 + cameraDistance * Math.sin(viewAngle)
+  camera.rotation.x = -viewAngle
+
+  let lastPositionX
+  let lastPositionY
+  renderer.domElement.addEventListener('pointermove', (event) => {
+    if (event.buttons == 1) {
+      const positionX = event.clientX / width
+      const positionY = event.clientY / width
+      if (lastPositionX) {
+        cylinder.rotation.y += 2.0 * (positionX - lastPositionX)
+      }
+      if (lastPositionY) {
+        cylinder.rotation.x += 2.0 * (positionY - lastPositionY)
+      }
+      lastPositionX = positionX
+      lastPositionY = positionY
+    } else {
+      lastPositionX = null
+      lastPositionY = null
+    }
+  })
 
   function animate () {
-    cylinder.rotation.y += 0.003
     window.requestAnimationFrame(animate)
     renderer.render(scene, camera)
   }
