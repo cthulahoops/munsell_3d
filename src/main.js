@@ -105,31 +105,36 @@ function displayImage (imageFile, renderPalette) {
   reader.readAsDataURL(imageFile)
 
   img.onload = () => {
-    console.log('Image loaded.')
     canvas.height = img.height
     canvas.width = img.width
     context.drawImage(img, 0, 0)
     const pixelData = context.getImageData(0, 0, img.width, img.height)
-    console.log('About to iterate', pixelData.data.length)
-    const colors = new Map()
-    for (let offset = 0; offset < pixelData.data.length; offset += 400) {
-      const r = pixelData.data[offset]
-      const g = pixelData.data[offset + 1]
-      const b = pixelData.data[offset + 2]
-      let mhvc = munsell.rgb255ToMhvc(r, g, b)
-      const [m, v, c] = [roundTo(mhvc[0], 2.5), roundTo(mhvc[1], 2.0), roundTo(mhvc[2], 2.0)]
-      // TODO Would like to use Munsell string here instead of JSON, but the library does wrong rounding and mangles 2.5.
-      mhvc = JSON.stringify([m, v, c])
-      colors.set(mhvc, (colors.get(mhvc) || 0) + 1)
-    }
-    for (const [key, value] of colors.entries()) {
-      if (value < 5) {
-        colors.delete(key)
-      }
-    }
-    console.log('Colours filtered!', colors)
+    const colors = extractPalette(pixelData)
     renderPalette(colors)
   }
+}
+
+function extractPalette (pixelData) {
+  console.log(pixelData)
+  const data = pixelData.data
+  const colors = new Map()
+  for (let offset = 0; offset < data.length; offset += 400) {
+    const [h, v, c] = rgbToBucketedMhvc(data[offset], data[offset + 1], data[offset + 2])
+    // TODO Would like to use Munsell string here instead of JSON, but the library does wrong rounding and mangles 2.5.
+    const mhvc = JSON.stringify([h, v, c])
+    colors.set(mhvc, (colors.get(mhvc) || 0) + 1)
+  }
+  for (const [key, value] of colors.entries()) {
+    if (value < 5) {
+      colors.delete(key)
+    }
+  }
+  return colors
+}
+
+function rgbToBucketedMhvc (r, g, b) {
+  const mhvc = munsell.rgb255ToMhvc(r, g, b)
+  return [roundTo(mhvc[0], 2.5), roundTo(mhvc[1], 2.0), roundTo(mhvc[2], 2.0)]
 }
 
 function roundTo (value, step) {
