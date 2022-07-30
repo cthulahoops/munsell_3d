@@ -3,6 +3,8 @@ import * as munsell from 'munsell'
 
 /* global Image, FileReader */
 
+const BACKGROUND_COLOR = 0x777777
+
 function main () {
   const fileInput = document.getElementById('select_file')
 
@@ -30,7 +32,7 @@ function initScene () {
 
   const renderer = new THREE.WebGLRenderer()
   renderer.setSize(width, height)
-  renderer.setClearColor(0x777777)
+  renderer.setClearColor(BACKGROUND_COLOR)
   container.appendChild(renderer.domElement)
 
   const viewAngle = Math.PI / 4
