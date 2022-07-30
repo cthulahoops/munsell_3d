@@ -14,8 +14,8 @@ function renderPalette (palette) {
   const scene = new THREE.Scene()
   const container = document.getElementById('output_3d')
 
-  const width = 0.9 * container.clientWidth;
-  const height = width;
+  const width = 0.9 * container.clientWidth
+  const height = width
 
   const camera = new THREE.PerspectiveCamera(75, height / width, 0.1, 1000)
 
@@ -50,8 +50,8 @@ function renderPalette (palette) {
 
   scene.add(cylinder)
 
-  let viewAngle = Math.PI / 4
-  let cameraDistance = 30
+  const viewAngle = Math.PI / 4
+  const cameraDistance = 30
   camera.position.z = cameraDistance * Math.cos(viewAngle)
   camera.position.y = 5 + cameraDistance * Math.sin(viewAngle)
   camera.rotation.x = -viewAngle
