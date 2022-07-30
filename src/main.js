@@ -28,13 +28,12 @@ function initScene () {
   const width = 0.9 * container.clientWidth
   const height = width
 
-  const camera = new THREE.PerspectiveCamera(75, height / width, 0.1, 1000)
-
   const renderer = new THREE.WebGLRenderer()
   renderer.setSize(width, height)
   renderer.setClearColor(BACKGROUND_COLOR)
   container.appendChild(renderer.domElement)
 
+  const camera = new THREE.PerspectiveCamera(75, height / width, 0.1, 1000)
   const viewAngle = Math.PI / 4
   const cameraDistance = 30
   camera.position.z = cameraDistance * Math.cos(viewAngle)
