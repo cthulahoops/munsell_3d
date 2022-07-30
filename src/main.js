@@ -17,26 +17,7 @@ function renderPalette (palette) {
   renderer.setClearColor(0x777777)
   container.appendChild(renderer.domElement)
 
-  const cylinder = new THREE.Group()
-
-  const geometry = new THREE.BoxGeometry(1, 1, 1)
-
-  for (const mcolor of palette.keys()) {
-    const [hue, value, chroma] = JSON.parse(mcolor)
-    const [r, g, b] = munsell.mhvcToRgb(hue, value, chroma)
-    const angle = 2 * Math.PI * hue / 100
-    const color = new THREE.Color(r, g, b)
-    const material = new THREE.MeshBasicMaterial({ color })
-
-    const cube = new THREE.Mesh(geometry, material)
-    cube.position.x = chroma * Math.sin(angle)
-    cube.position.y = value
-    cube.position.z = chroma * Math.cos(angle)
-
-    cube.rotation.y = angle
-    cylinder.add(cube)
-  }
-
+  const cylinder = paletteCylinder(palette)
   scene.add(cylinder)
 
   const viewAngle = Math.PI / 4
@@ -70,6 +51,30 @@ function renderPalette (palette) {
     renderer.render(scene, camera)
   }
   animate()
+}
+
+function paletteCylinder (palette) {
+  const cylinder = new THREE.Group()
+
+  const geometry = new THREE.BoxGeometry(1, 1, 1)
+
+  for (const mcolor of palette.keys()) {
+    const [hue, value, chroma] = JSON.parse(mcolor)
+    const [r, g, b] = munsell.mhvcToRgb(hue, value, chroma)
+    const angle = 2 * Math.PI * hue / 100
+    const color = new THREE.Color(r, g, b)
+    const material = new THREE.MeshBasicMaterial({ color })
+
+    const cube = new THREE.Mesh(geometry, material)
+    cube.position.x = chroma * Math.sin(angle)
+    cube.position.y = value
+    cube.position.z = chroma * Math.cos(angle)
+
+    cube.rotation.y = angle
+    cylinder.add(cube)
+  }
+
+  return cylinder
 }
 
 function displayImage (imageFile) {
