@@ -1,14 +1,7 @@
 import * as THREE from 'three'
 import * as munsell from 'munsell'
 
-// Helpful for debugging, remove later. (There must be a better way!)
-window.munsell = munsell
-
-/* global Image */
-
-// function main () {
-// displayImage()
-// }
+/* global Image, FileReader */
 
 function renderPalette (palette) {
   const scene = new THREE.Scene()
@@ -27,14 +20,10 @@ function renderPalette (palette) {
   const cylinder = new THREE.Group()
 
   const geometry = new THREE.BoxGeometry(1, 1, 1)
-  // const segments = 40
 
   for (const mcolor of palette.keys()) {
     const [hue, value, chroma] = JSON.parse(mcolor)
     const [r, g, b] = munsell.mhvcToRgb(hue, value, chroma)
-    // if (r > 1 || g > 1 || b > 1 || r < 0 || g < 0 || b < 0) {
-    //   continue
-    // }
     const angle = 2 * Math.PI * hue / 100
     const color = new THREE.Color(r, g, b)
     const material = new THREE.MeshBasicMaterial({ color })
@@ -59,7 +48,7 @@ function renderPalette (palette) {
   let lastPositionX
   let lastPositionY
   renderer.domElement.addEventListener('pointermove', (event) => {
-    if (event.buttons == 1) {
+    if (event.buttons === 1) {
       const positionX = event.clientX / width
       const positionY = event.clientY / width
       if (lastPositionX) {
