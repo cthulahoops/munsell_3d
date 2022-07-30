@@ -100,7 +100,7 @@ function displayImage (imageFile, renderPalette) {
   img.file = imageFile
 
   const reader = new FileReader()
-  reader.onload = (function (aImg) { return function (e) { aImg.src = e.target.result } })(img)
+  reader.onload = (event) => { img.src = event.target.result }
   reader.readAsDataURL(imageFile)
 
   img.onload = () => {
