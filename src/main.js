@@ -10,14 +10,14 @@ function main () {
 
   const scene = initScene()
 
-  fileInput.onchange = () => {
+  fileInput.onchange = async () => {
     const selectedFile = fileInput.files[0]
     console.log(selectedFile)
-    displayImage(selectedFile, (palette) => {
-      scene.clear()
-      const cylinder = paletteCylinder(palette)
-      scene.add(cylinder)
-    })
+    const pixelData = await displayImage(selectedFile)
+    const palette = extractPalette(pixelData)
+    scene.clear()
+    const cylinder = paletteCylinder(palette)
+    scene.add(cylinder)
   }
 }
 
@@ -93,24 +93,18 @@ function paletteCylinder (palette) {
   return cylinder
 }
 
-function displayImage (imageFile, renderPalette) {
+async function displayImage (imageFile, renderPalette) {
   const canvas = document.getElementById('image_input')
-  const context = canvas.getContext('2d')
   const img = new Image()
   img.file = imageFile
+  const imageData = await readAsDataURLAsync(imageFile)
+  await setImageSrcAsync(img, imageData)
 
-  const reader = new FileReader()
-  reader.onload = (event) => { img.src = event.target.result }
-  reader.readAsDataURL(imageFile)
-
-  img.onload = () => {
-    canvas.height = img.height
-    canvas.width = img.width
-    context.drawImage(img, 0, 0)
-    const pixelData = context.getImageData(0, 0, img.width, img.height)
-    const colors = extractPalette(pixelData)
-    renderPalette(colors)
-  }
+  canvas.height = img.height
+  canvas.width = img.width
+  const context = canvas.getContext('2d')
+  context.drawImage(img, 0, 0)
+  return context.getImageData(0, 0, img.width, img.height)
 }
 
 function extractPalette (pixelData) {
@@ -138,6 +132,28 @@ function rgbToBucketedMhvc (r, g, b) {
 
 function roundTo (value, step) {
   return step * Math.round(value / step)
+}
+
+function readAsDataURLAsync (file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader()
+
+    reader.onload = () => {
+      resolve(reader.result)
+    }
+
+    reader.onerror = reject
+
+    reader.readAsDataURL(file)
+  })
+}
+
+function setImageSrcAsync (image, imageData) {
+  return new Promise((resolve, reject) => {
+    image.src = imageData
+    image.onload = resolve
+    image.onerror = reject
+  })
 }
 
 main()
