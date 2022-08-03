@@ -40,6 +40,18 @@ function initScene () {
   camera.position.y = 5 + cameraDistance * Math.sin(viewAngle)
   camera.rotation.x = -viewAngle
 
+  setupMouseHandler(renderer, scene, width)
+
+  function animate () {
+    window.requestAnimationFrame(animate)
+    renderer.render(scene, camera)
+  }
+  animate()
+
+  return scene
+}
+
+function setupMouseHandler (renderer, scene, width) {
   let lastPositionX
   let lastPositionY
   renderer.domElement.addEventListener('pointermove', (event) => {
@@ -59,14 +71,6 @@ function initScene () {
       lastPositionY = null
     }
   })
-
-  function animate () {
-    window.requestAnimationFrame(animate)
-    renderer.render(scene, camera)
-  }
-  animate()
-
-  return scene
 }
 
 function paletteCylinder (palette) {
