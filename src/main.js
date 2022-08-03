@@ -40,25 +40,7 @@ function initScene () {
   camera.position.y = 5 + cameraDistance * Math.sin(viewAngle)
   camera.rotation.x = -viewAngle
 
-  let lastPositionX
-  let lastPositionY
-  renderer.domElement.addEventListener('pointermove', (event) => {
-    if (event.buttons === 1) {
-      const positionX = event.clientX / width
-      const positionY = event.clientY / width
-      if (lastPositionX) {
-        scene.rotation.y += 2.0 * (positionX - lastPositionX)
-      }
-      if (lastPositionY) {
-        scene.rotation.x += 2.0 * (positionY - lastPositionY)
-      }
-      lastPositionX = positionX
-      lastPositionY = positionY
-    } else {
-      lastPositionX = null
-      lastPositionY = null
-    }
-  })
+  setupMouseHandler(renderer, scene, width)
 
   function animate () {
     window.requestAnimationFrame(animate)
@@ -67,6 +49,42 @@ function initScene () {
   animate()
 
   return scene
+}
+
+function setupMouseHandler (renderer, scene, width) {
+  const domElement = renderer.domElement
+  let startPosition
+  let initRotation
+
+  const move = (event) => {
+    if (!startPosition) {
+      return
+    }
+    const position = { x: event.clientX / width, y: event.clientY / width }
+    scene.rotation.y = initRotation.y + 3.0 * (position.x - startPosition.x)
+    scene.rotation.x = initRotation.x + 3.0 * (position.y - startPosition.y)
+  }
+  const end = (event) => {
+    startPosition = null
+  }
+  const start = (event) => {
+    startPosition = { x: event.clientX / width, y: event.clientY / width }
+    initRotation = { x: scene.rotation.x, y: scene.rotation.y }
+  }
+  const cancel = (event) => {
+    scene.rotation.x = initRotation.x
+    scene.rotation.y = initRotation.y
+    startPosition = null
+  }
+  domElement.addEventListener('pointerdown', start)
+  domElement.addEventListener('pointerup', end)
+  domElement.addEventListener('pointerout', end)
+  domElement.addEventListener('pointermove', move)
+  domElement.addEventListener('pointercancel', cancel)
+  domElement.addEventListener('touchstart', start)
+  domElement.addEventListener('touchend', end)
+  domElement.addEventListener('touchmove', move)
+  domElement.addEventListener('touchcancel', cancel)
 }
 
 function paletteCylinder (palette) {
