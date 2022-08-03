@@ -52,23 +52,17 @@ function initScene () {
 }
 
 function setupMouseHandler (renderer, scene, width) {
-  let lastPositionX
-  let lastPositionY
+  let lastPosition
   renderer.domElement.addEventListener('pointermove', (event) => {
     if (event.buttons === 1) {
-      const positionX = event.clientX / width
-      const positionY = event.clientY / width
-      if (lastPositionX) {
-        scene.rotation.y += 2.0 * (positionX - lastPositionX)
+      const position = { x: event.clientX / width, y: event.clientY / width }
+      if (lastPosition) {
+        scene.rotation.y += 3.0 * (position.x - lastPosition.x)
+        scene.rotation.x += 3.0 * (position.y - lastPosition.y)
       }
-      if (lastPositionY) {
-        scene.rotation.x += 2.0 * (positionY - lastPositionY)
-      }
-      lastPositionX = positionX
-      lastPositionY = positionY
+      lastPosition = position
     } else {
-      lastPositionX = null
-      lastPositionY = null
+      lastPosition = null
     }
   })
 }
