@@ -5,13 +5,14 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "author": "Adam Kelly <adam@cthulahoops.org>",
   "license": "UNLICENSED",
   "dependencies": {
     "munsell": "^1.0.8",
     "three": "^0.143.0"
   },
   "devDependencies": {
-    "parcel": "^2.6.2"
-  }
+    "parcel": "^2.7.0"
+  },
+  "repository": "git@github.com:cthulahoops/munsell_3d.git"
 }
