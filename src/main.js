@@ -4,6 +4,7 @@ import * as munsell from 'munsell'
 /* global Image, FileReader */
 
 const BACKGROUND_COLOR = 0x777777
+const PIXEL_SAMPLES = 1000
 
 function main () {
   const fileInput = document.getElementById('select_file')
@@ -128,8 +129,10 @@ async function displayImage (imageFile, renderPalette) {
 function extractPalette (pixelData) {
   console.log(pixelData)
   const data = pixelData.data
+  const sampleStep = Math.floor(data.length / (4 * PIXEL_SAMPLES))
+
   const colors = new Map()
-  for (let offset = 0; offset < data.length; offset += 400) {
+  for (let offset = 0; offset < data.length; offset += 4 * sampleStep) {
     const [h, v, c] = rgbToBucketedMhvc(data[offset], data[offset + 1], data[offset + 2])
     // TODO Would like to use Munsell string here instead of JSON, but the library does wrong rounding and mangles 2.5.
     const mhvc = JSON.stringify([h, v, c])
